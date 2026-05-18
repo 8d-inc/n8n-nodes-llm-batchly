@@ -1,0 +1,64 @@
+{
+  "name": "n8n-nodes-llm-batchly",
+  "version": "0.1.0",
+  "description": "Create async LLM batches in n8n via the LLM Batchly public API",
+  "license": "MIT",
+  "packageManager": "pnpm@10.32.1",
+  "homepage": "https://github.com/8d-inc/n8n-nodes-llm-batchly#readme",
+  "author": {
+    "name": "Yoshiki Ozaki",
+    "email": "giboshi31@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/8d-inc/n8n-nodes-llm-batchly.git"
+  },
+  "bugs": {
+    "url": "https://github.com/8d-inc/n8n-nodes-llm-batchly/issues"
+  },
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "llm",
+    "batch",
+    "openai",
+    "anthropic"
+  ],
+  "engines": {
+    "node": ">=20.19 <25"
+  },
+  "main": "index.js",
+  "files": ["dist"],
+  "scripts": {
+    "clean": "node scripts/clean-dist.mjs",
+    "build": "node scripts/clean-dist.mjs && tsc && node scripts/copy-static-assets.mjs",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "npx --yes @biomejs/biome@1.9.4 check credentials nodes scripts tests package.json tsconfig.json README.md",
+    "lint:fix": "npx --yes @biomejs/biome@1.9.4 check --write credentials nodes scripts tests package.json tsconfig.json README.md",
+    "test": "pnpm run build && node --test tests/unit/*.test.cjs",
+    "scan": "node scripts/verify-package-metadata.mjs",
+    "scan:published": "npx --yes @n8n/scan-community-package n8n-nodes-llm-batchly",
+    "release": "n8n-node release",
+    "prepublishOnly": "pnpm run build && pnpm run scan"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "strict": true,
+    "nodes": ["dist/nodes/LLMBatchly/LLMBatchly.node.js"],
+    "credentials": ["dist/credentials/LLMBatchlyApi.credentials.js"]
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "^0.23.1",
+    "@n8n/scan-community-package": "^0.12.0",
+    "@types/node": "^24.5.2",
+    "n8n-workflow": "*",
+    "typescript": "^5.9.2"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  }
+}

@@ -1,0 +1,41 @@
+name: Publish
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "n8n-node-v*.*.*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup mise toolchain
+        uses: jdx/mise-action@v2
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Test
+        run: pnpm run test
+
+      - name: Scan package metadata
+        run: pnpm run scan
+
+      - name: Configure npm authentication
+        run: printf "//registry.npmjs.org/:_authToken=%s\n" "${NODE_AUTH_TOKEN}" > "$HOME/.npmrc"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to npm with provenance
+        run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
