@@ -464,11 +464,7 @@ async function tryFetchModelCatalog(
 ) {
   try {
     return await fetchModelCatalog(context, credentials)
-  } catch (error) {
-    console.warn(
-      "Failed to fetch Batchly model catalog; using fallback.",
-      error,
-    )
+  } catch {
     return undefined
   }
 }
